@@ -1,0 +1,123 @@
+<?php
+/**
+ * @file
+ * ms_locations.module file
+ */
+
+/**
+ * Implements hook_cron()
+ * Synchronizes and fetches locations from www.humanitarianresponse.info/api/v1.0/locations on cron
+ */
+function ms_locations_cron() {
+  //ms_locations_fetch_and_sync(0);
+  //ms_locations_fetch_and_sync(1);
+  //ms_locations_fetch_and_sync(2);
+}
+
+/**
+ * Fetch and sync locations from www.humanitarianresponse.info/api/v1.0/locations.
+ */
+function ms_locations_fetch_and_sync($admin_level) {
+  $languages = array(
+    'en',
+    'fr',
+    'es'
+  );
+  $installed_languages = array_keys(language_list());
+
+  foreach ($languages as $language) {
+    if (in_array($language, $installed_languages)) {
+      $url = 'https://www.humanitarianresponse.info/'.$language.'/api/v1.0/locations?filter[admin_level]='.$admin_level;
+
+      while(TRUE) {
+        $request = drupal_http_request($url);
+        if (isset($request->data)) {
+          $data = drupal_json_decode($request->data);
+          if (empty($data['data'])) {
+            return;
+          }
+
+          foreach ($data['data'] as $item) {
+            if (isset($item['label']) && $item['label'] && isset($item['id']) && $item['id']) {
+              $parent = 0;
+              if (isset($item['parent'][0]['id'])) {
+                $query = new EntityFieldQuery();
+                $query->entityCondition('entity_type', 'taxonomy_term');
+                $query->entityCondition('bundle', 'ms_location', '=');
+                $query->fieldCondition('field_ms_hrinfo_id', 'value', $item['parent'][0]['id'], '=');
+                $result = $query->execute();
+
+                // Parent must exist.
+                if (!isset($result['taxonomy_term'])) {
+                  continue;
+                }
+
+                $parent_term = reset($result['taxonomy_term']);
+                $term = taxonomy_term_load($parent_term->tid);
+                $parent = $parent_term->tid;
+              }
+
+              $query = new EntityFieldQuery();
+              $query->entityCondition('entity_type', 'taxonomy_term');
+              $query->entityCondition('bundle', 'ms_location', '=');
+              $query->fieldCondition('field_ms_hrinfo_id', 'value', $item['id'], '=');
+              $result = $query->execute();
+
+              $term = new stdClass();
+              if (!isset($result['taxonomy_term'])) {
+                $vocabularies = taxonomy_vocabulary_get_names();
+                $term = (object) array(
+                  'vid' => $vocabularies['ms_location']->vid,
+                  'name' => $item['label'],
+                  'vocabulary_machine_name' => 'ms_location'
+                );
+              }
+              else {
+                $tid = array_pop($result['taxonomy_term']);
+                $term = taxonomy_term_load($tid->tid);
+                if ($language != 'en' && !isset($term->translations->data[$language])) {
+                  $translation = array(
+                    'translate' => 0,
+                    'status' => 1,
+                    'language' => $language,
+                    'source' => 'en'
+                  );
+                  $handler = entity_translation_get_handler('taxonomy_term', $term);
+                  $handler->setTranslation($translation);
+                }
+              }
+
+              if ($language == 'en') {
+                $term->name = $item['label'];
+              }
+              $term->name_field[$language][0]['value'] = $item['label'];
+              $term->field_ms_hrinfo_id[LANGUAGE_NONE][0]['value'] = $item['id'];
+              $term->field_ms_pcode[LANGUAGE_NONE][0]['value'] = $item['pcode'];
+              if ($parent) {
+                $term->parent = $parent;
+              }
+
+              taxonomy_term_save($term);
+            }
+          }
+          if (isset($data['next']) && isset($data['next']['href'])) {
+            $url = $data['next']['href'];
+          }
+          else {
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function ms_locations_delete_all() {
+  $query = new EntityFieldQuery();
+              $query->entityCondition('entity_type', 'taxonomy_term');
+              $query->entityCondition('bundle', 'ms_location', '=');
+              $result = $query->execute();
+  foreach ($result['taxonomy_term'] as $term) {
+    taxonomy_term_delete($term->tid);
+  }
+}

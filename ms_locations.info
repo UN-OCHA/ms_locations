@@ -1,0 +1,14 @@
+name = Locations
+core = 7.x
+package = Microservice
+dependencies[] = features
+dependencies[] = ms_core
+dependencies[] = number
+dependencies[] = taxonomy
+dependencies[] = text
+features[features_api][] = api:2
+features[field_base][] = field_ms_pcode
+features[field_instance][] = taxonomy_term-ms_location-field_ms_hrinfo_id
+features[field_instance][] = taxonomy_term-ms_location-field_ms_pcode
+features[field_instance][] = taxonomy_term-ms_location-name_field
+features[taxonomy][] = ms_location
