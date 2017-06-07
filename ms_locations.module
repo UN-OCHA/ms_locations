@@ -93,6 +93,8 @@ function ms_locations_fetch_and_sync($admin_level) {
               $term->name_field[$language][0]['value'] = $item['label'];
               $term->field_ms_hrinfo_id[LANGUAGE_NONE][0]['value'] = $item['id'];
               $term->field_ms_pcode[LANGUAGE_NONE][0]['value'] = $item['pcode'];
+              $term->field_ms_latlon[LANGUAGE_NONE][0]['lat'] = $item['geolocation']['lat'];
+              $term->field_ms_latlon[LANGUAGE_NONE][0]['lon'] = $item['geolocation']['lon'];
               if ($parent) {
                 $term->parent = $parent;
               }
