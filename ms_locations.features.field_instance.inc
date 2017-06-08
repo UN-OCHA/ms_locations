@@ -51,42 +51,6 @@ function ms_locations_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-ms_location-field_ms_latlon'.
-  $field_instances['taxonomy_term-ms_location-field_ms_latlon'] = array(
-    'bundle' => 'ms_location',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'geofield',
-        'settings' => array(
-          'data' => 'full',
-        ),
-        'type' => 'geofield_wkt',
-        'weight' => 3,
-      ),
-    ),
-    'entity_type' => 'taxonomy_term',
-    'field_name' => 'field_ms_latlon',
-    'label' => 'Latititude / Longitude',
-    'required' => 0,
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'geofield',
-      'settings' => array(
-        'html5_geolocation' => 0,
-      ),
-      'type' => 'geofield_latlon',
-      'weight' => 4,
-    ),
-  );
-
   // Exported field_instance: 'taxonomy_term-ms_location-field_ms_pcode'.
   $field_instances['taxonomy_term-ms_location-field_ms_pcode'] = array(
     'bundle' => 'ms_location',
@@ -162,7 +126,6 @@ function ms_locations_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Hrinfo ID');
-  t('Latititude / Longitude');
   t('Name');
   t('Pcode');
 
