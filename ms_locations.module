@@ -123,3 +123,19 @@ function ms_locations_delete_all() {
     taxonomy_term_delete($term->tid);
   }
 }
+
+/**
+ * Retrieve original location from hrinfo
+ */
+function ms_locations_fetch_original($id) {
+  $url = 'https://www.humanitarianresponse.info/api/v1.0/locations/'.$id;
+  $request = drupal_http_request($url);
+  if (isset($request->data)) {
+    $data = drupal_json_decode($request->data);
+    $group = reset(reset($data));
+    return $group;
+  }
+  else {
+    return NULL;
+  }
+}
