@@ -1,4 +1,5 @@
 name = Locations
+description = Fetches locations from Humanitarianresponse
 core = 7.x
 package = Microservice
 dependencies[] = entityreference
