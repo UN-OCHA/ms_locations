@@ -138,7 +138,8 @@ function ms_locations_fetch_original($id) {
   $request = drupal_http_request($url);
   if (isset($request->data)) {
     $data = drupal_json_decode($request->data);
-    $group = reset(reset($data));
+    $first = reset($data);
+    $group = reset($first);
     return $group;
   }
   else {
