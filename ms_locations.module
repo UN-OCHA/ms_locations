@@ -11,9 +11,14 @@
  * www.humanitarianresponse.info/api/v1.0/locations on cron.
  */
 function ms_locations_cron() {
-  ms_locations_fetch_and_sync(0);
-  ms_locations_fetch_and_sync(1);
-  ms_locations_fetch_and_sync(2);
+  $last_pull = variable_get('ms_locations_last_pull', 0);
+  $now = time();
+  if ($now - $last_pull > 24 * 3600) {
+    ms_locations_fetch_and_sync(0);
+    ms_locations_fetch_and_sync(1);
+    ms_locations_fetch_and_sync(2);
+    variable_set('ms_locations_last_pull', $now);
+  }
 }
 
 /**
