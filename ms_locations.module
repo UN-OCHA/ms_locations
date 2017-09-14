@@ -179,7 +179,6 @@ function ms_locations_shs_json_term_get_children($vid, $parent = array(), $setti
 
     $has_children = _ms_locations_taxonomy_get_all_children($scope);
 
-    // Rewrite result set to preserve original sort of terms through JSON request.
     foreach ($scope as $terms) {
       foreach ($terms as $tid => $label) {
         $result[] = array(
