@@ -37,11 +37,13 @@ function ms_locations_fetch_and_sync($admin_level) {
 
   foreach ($languages as $language) {
     if (in_array($language, $installed_languages)) {
+      $page = 1;
       $url = 'https://www.humanitarianresponse.info/' . $language . '/api/v1.0/locations?filter[admin_level]=' . $admin_level;
 
       while (TRUE) {
-        watchdog('ms_locations', 'Fetching ' . $url);
-        $request = drupal_http_request($url);
+        $fetch_url = $url . '&page=' . $page;
+        watchdog('ms_locations', 'Fetching ' . $fetch_url);
+        $request = drupal_http_request($fetch_url);
         if (isset($request->data)) {
           $data = drupal_json_decode($request->data);
           if (empty($data['data'])) {
@@ -111,13 +113,12 @@ function ms_locations_fetch_and_sync($admin_level) {
               taxonomy_term_save($term);
             }
           }
-          if (isset($data['next']) && isset($data['next']['href'])) {
-            $url = $data['next']['href'];
-          }
-          else {
-            break;
-          }
         }
+        else {
+          break;
+        }
+
+        $page++;
       }
     }
   }
