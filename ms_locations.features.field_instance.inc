@@ -51,6 +51,61 @@ function ms_locations_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'taxonomy_term-ms_location-field_ms_lat_long'.
+  $field_instances['taxonomy_term-ms_location-field_ms_lat_long'] = array(
+    'bundle' => 'ms_location',
+    'default_value' => array(),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'geofield',
+        'settings' => array(
+          'data' => 'full',
+        ),
+        'type' => 'geofield_wkt',
+        'weight' => 3,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_ms_lat_long',
+    'label' => 'Lat/Long',
+    'required' => 0,
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'geocoder',
+      'settings' => array(
+        'delta_handling' => 'default',
+        'geocoder_field' => 'name',
+        'geocoder_handler' => 'google',
+        'handler_settings' => array(
+          'google' => array(
+            'all_results' => 0,
+            'biasing' => array(
+              'bounds' => '',
+              'components' => '',
+              'region' => '',
+            ),
+            'geometry_type' => 'point',
+            'reject_results' => array(
+              'APPROXIMATE' => 0,
+              'GEOMETRIC_CENTER' => 0,
+              'RANGE_INTERPOLATED' => 0,
+              'ROOFTOP' => 0,
+            ),
+          ),
+        ),
+      ),
+      'type' => 'geocoder',
+      'weight' => 4,
+    ),
+  );
+
   // Exported field_instance: 'taxonomy_term-ms_location-field_ms_pcode'.
   $field_instances['taxonomy_term-ms_location-field_ms_pcode'] = array(
     'bundle' => 'ms_location',
@@ -126,6 +181,7 @@ function ms_locations_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Hrinfo ID');
+  t('Lat/Long');
   t('Name');
   t('Pcode');
 

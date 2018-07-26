@@ -217,3 +217,18 @@ function _ms_locations_taxonomy_get_all_children($scope) {
 
   return $result;
 }
+
+function ms_locations_geocoder_geocode_values_array_alter(&$source_field_values, $data) {
+  // Only check location terms.
+  if (!isset($data['entity']->vocabulary_machine_name) || $data['entity']->vocabulary_machine_name != 'ms_location') {
+    return;
+  }
+
+  // Skip terms that are already geocded.
+  if (isset($data['entity']->field_ms_lat_long['und'][0]['lat'])) {
+    if (isset($data['entity']->name_field['en'][0]['value']) && isset($data['entity']->original->name_field['en'][0]['value']) && $data['entity']->name_field['en'][0]['value'] == $data['entity']->original->name_field['en'][0]['value']) {
+      $source_field_values = array();
+      return;
+    }
+  }
+}
